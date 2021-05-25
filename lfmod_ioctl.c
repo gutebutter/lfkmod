@@ -21,8 +21,6 @@ long lfmod_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
     struct lf_device *ldev = (struct lf_device *)(fp->private_data);
     uint32_t tmp;
 
-    pr_info("in ioctl");
-
     // copy from user if indicated
     if (_IOC_DIR(cmd) & _IOC_WRITE) {
         if (copy_from_user(&ioctl, user_arg, _IOC_SIZE(cmd))) {
@@ -35,7 +33,6 @@ long lfmod_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
     // dispatch
     switch (cmd) {
         case LFMOD_REGISTER_READ:
-            pr_info("in LFMOD_REGISTER_READ from %d", ioctl.reg.offset);
             if ((ioctl.reg.offset & 0x3) || (ioctl.reg.offset >= ldev->pbar.size)) {
                 // check 32bit addresses or out of bounds
                 pr_info("ioctl LFMOD_REGISTER_READ size or alignment mismatch");
@@ -43,11 +40,9 @@ long lfmod_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
                 break;
             }
             ioctl.reg.data = BAR_READ_32(ldev, ioctl.reg.offset >> 2);
-            pr_info("in LFMOD_REGISTER_READ read %08x", ioctl.reg.data);
             break;
 
         case LFMOD_REGISTER_WRITE:
-            pr_info("in LFMOD_REGISTER_WRITE");
             if ((ioctl.reg.offset & 0x3) || (ioctl.reg.offset >= ldev->pbar.size)) {
                 // check 32bit addresses or out of bounds
                 pr_err("ioctl LFMOD_REGISTER_WRITE size or alignment mismatch");
@@ -58,7 +53,6 @@ long lfmod_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
             break;
 
         case LFMOD_REGISTER_RMW:
-            pr_info("in LFMOD_REGISTER_RMW");
             if ((ioctl.reg.offset & 0x3) || (ioctl.reg.offset >= ldev->pbar.size)) {
                 // check 32bit addresses or out of bounds
                 pr_err("ioctl LFMOD_REGISTER_RMW size or alignment mismatch");
