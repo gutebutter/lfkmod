@@ -1,0 +1,8 @@
+---
+BasedOnStyle: Microsoft
+BreakBeforeBraces: Stroustrup
+IndentCaseLabels: 'true'
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+Language: Cpp
+AlignConsecutiveMacros: 'true'
+...
