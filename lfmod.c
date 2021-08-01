@@ -9,6 +9,7 @@
 #include "lfmod.h"
 #include "lfmod_file.h"
 #include "lfmod_ioctl.h"
+#include "lfmod_mmap.h"
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("rage");
@@ -30,13 +31,16 @@ MODULE_DEVICE_TABLE(pci, device_ids);
 int lf_pci_probe(struct pci_dev *dev, const struct pci_device_id *id);
 void lf_pci_remove(struct pci_dev *dev);
 
-// we're a pci driver
+// we're a pci driver with these entry points
 static struct pci_driver lfmod_pci = {
     .name = LF_MODULE_NAME, .id_table = device_ids, .probe = lf_pci_probe, .remove = lf_pci_remove};
 
 // fileops of the registered file in sysfs
-static const struct file_operations lfmod_fops = {
-    .owner = THIS_MODULE, .open = lfmod_open, .release = lfmod_release, .unlocked_ioctl = lfmod_ioctl};
+static const struct file_operations lfmod_fops = {.owner = THIS_MODULE,
+                                                  .open = lfmod_open,
+                                                  .release = lfmod_release,
+                                                  .unlocked_ioctl = lfmod_ioctl,
+                                                  .mmap = lfmod_mmap};
 
 // map the specified bar
 static int lf_map_bar(struct pci_dev *dev, int bar)
@@ -169,6 +173,8 @@ int lf_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
         pr_err("lf_create_filenode failed: %d\n", rc);
         goto err_create_filenode;
     }
+
+    ldev->pdev = dev;
 
     // success
     return 0;

@@ -26,6 +26,8 @@ struct lf_device {
     struct device *sysfs_device;
     // cdev
     struct cdev chrdev;
+    // reference to the pci device
+    struct pci_dev *pdev;
 };
 
 #endif // LFMOD_H_

@@ -3,7 +3,7 @@ TARGET = litefurym
 KDIR = /lib/modules/$(shell uname -r)/build
 
 obj-m += $(TARGET).o
-$(TARGET)-objs := lfmod.o lfmod_ioctl.o lfmod_file.o
+$(TARGET)-objs := lfmod.o lfmod_ioctl.o lfmod_file.o lfmod_mmap.o
 
 all:
 	make -C $(KDIR) M=$(PWD) modules
